@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Claim Edit Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let currentIndex = [[${#lists.size(claim.charges)}]];
+
+        function addChargeSection() {
+            var container = document.getElementById('charge-sections');
+            var newSection = document.createElement('div');
+            newSection.innerHTML = `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Charge ID:</label>
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].chargeId" />
+                        </div>
+                        <div class="form-group">
+                            <label>Procedure Code:</label>
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].procedureCode" />
+                        </div>
+                        <div id="diagnosis-section-${currentIndex}" class="mb-3">
+                            <label>Diagnosis Codes:</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0]" />
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm mb-2" onclick="addDiagnosisCode(${currentIndex})">Add Diagnosis Code</button>
+                        <div class="form-group">
+                            <label>Charge Amount:</label>
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].chargeAmount" />
+                        </div>
+                        <div class="form-group">
+                            <label>Outstanding Amount:</label>
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].outstandingAmount" />
+                        </div>
+                        <div class="form-group">
+                            <label>Paid Amount:</label>
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].paidAmount" />
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newSection);
+            currentIndex++;
+        }
+
+        function addDiagnosisCode(chargeIndex) {
+            var container = document.getElementById(`diagnosis-section-${chargeIndex}`);
+            var diagnosisIndex = container.getElementsByClassName('form-group').length;
+            var newDiagnosisCode = document.createElement('div');
+            newDiagnosisCode.classList.add('form-group');
+            newDiagnosisCode.innerHTML = `<input type="text" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}]" />`;
+            container.appendChild(newDiagnosisCode);
+        }
+
+        function initializeAddDiagnosisCodeButtons() {
+            document.querySelectorAll('.add-diagnosis-code-btn').forEach(button => {
+                button.onclick = () => {
+                    const chargeIndex = button.dataset.index;
+                    addDiagnosisCode(chargeIndex);
+                };
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeAddDiagnosisCodeButtons);
+
+        function removeSection(button) {
+            button.closest('.card').remove();
+        }
+    </script>
+    <style>
+        .card {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Welcome to the Claim Edit Page</h1>
+    <form th:action="@{/process}" th:object="${claim}" method="POST">
+        <div>
+            <h2 th:text="*{patientDetails.patientName}">New Patient</h2>
+            <h2 th:text="*{patientDetails.patientDOB}">01/01/1999</h2>
+        </div>
+        <div id="charge-sections">
+            <div th:class="'card mb-3'" th:each="charge, iterStat : *{charges}" th:id="'charge-section-' + ${iterStat.index}">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Charge ID:</label>
+                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].chargeId}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Procedure Code:</label>
+                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].procedureCode}" />
+                    </div>
+                    <div th:id="'diagnosis-section-' + ${iterStat.index}" class="mb-3">
+                        <label>Diagnosis Codes:</label>
+                        <div th:each="diagnosisCode, diagStat : *{charges[__${iterStat.index}__].diagnosisCodes}" class="form-group">
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__]}" />
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm mb-2 add-diagnosis-code-btn" th:data-index="${iterStat.index}">Add Diagnosis Code</button>
+                    <div class="form-group">
+                        <label>Charge Amount:</label>
+                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].chargeAmount}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Outstanding Amount:</label>
+                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].outstandingAmount}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Paid Amount:</label>
+                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].paidAmount}" />
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-success btn-sm" onclick="addChargeSection()">Add</button>
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </form>
+</div>
+</body>
+</html>
