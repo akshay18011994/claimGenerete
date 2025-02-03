@@ -82,4 +82,17 @@ public class Charge {
     public void setClaimid(int claimid) {
         Claimid = claimid;
     }
+
+    @Override
+    public String toString() {
+        return "Charge{" +
+                "chargeId=" + chargeId +
+                ", procedureCode='" + procedureCode + '\'' +
+                ", diagnosisCodes=" + diagnosisCodes +
+                ", chargeAmount=" + chargeAmount +
+                ", outstandingAmount=" + outstandingAmount +
+                ", paidAmount=" + paidAmount +
+                ", Claimid=" + Claimid +
+                '}';
+    }
 }

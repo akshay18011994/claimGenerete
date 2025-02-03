@@ -82,52 +82,68 @@
             margin: 10px 0;
             border: 1px solid #ccc;
         }
+        .bold-large-text {
+            font-size: 35px; /* Adjust the font size as needed */
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 <div class="container mt-5">
     <h1 class="mb-4">Welcome to the Claim Edit Page</h1>
     <form th:action="@{/process}" th:object="${claim}" method="POST">
-        <div>
-            <h2 th:text="*{patientDetails.patientName}">New Patient</h2>
-            <h2 th:text="*{patientDetails.patientDOB}">01/01/1999</h2>
+        <div class="card">
+            <label></label>
+            <input type="hidden" th:field="*{patientDetails.patientName}" />
+            <h2 th:text="*{patientDetails.patientName}"></h2>
+            <input type="hidden" th:field="*{patientDetails.patientDOB}" />
+            <h2 th:text="${#temporals.format(claim.patientDetails.patientDOB, 'dd/MM/yyyy')}"></h2>
+            <input type="hidden" th:field="*{patientDetails.id}" />
+            <h2 th:text="*{patientDetails.id}"></h2>
+
         </div>
-        <div id="charge-sections">
-            <div th:class="'card mb-3'" th:each="charge, iterStat : *{charges}" th:id="'charge-section-' + ${iterStat.index}">
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Charge ID:</label>
-                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].chargeId}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Procedure Code:</label>
-                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].procedureCode}" />
-                    </div>
-                    <div th:id="'diagnosis-section-' + ${iterStat.index}" class="mb-3">
-                        <label>Diagnosis Codes:</label>
-                        <div th:each="diagnosisCode, diagStat : *{charges[__${iterStat.index}__].diagnosisCodes}" class="form-group">
-                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__]}" />
+        <div class="card">
+            <input type="hidden" th:field="${claim.created}" />
+            <h2 th:text="${claim.created}"></h2>
+            <input type="hidden" th:field="${claim.id}" />
+            <h2 th:text="${claim.id}"></h2>
+            <div id="charge-sections">
+                <div th:class="'card mb-3'" th:each="charge, iterStat : *{charges}" th:id="'charge-section-' + ${iterStat.index}">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Charge ID:</label>
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].chargeId}" />
                         </div>
+                        <div class="form-group">
+                            <label>Procedure Code:</label>
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].procedureCode}" />
+                        </div>
+                        <div th:id="'diagnosis-section-' + ${iterStat.index}" class="mb-3">
+                            <label>Diagnosis Codes:</label>
+                            <div th:each="diagnosisCode, diagStat : *{charges[__${iterStat.index}__].diagnosisCodes}" class="form-group">
+                                <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__]}" />
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm mb-2 add-diagnosis-code-btn" th:data-index="${iterStat.index}">Add Diagnosis Code</button>
+                        <div class="form-group">
+                            <label>Charge Amount:</label>
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].chargeAmount}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Outstanding Amount:</label>
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].outstandingAmount}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Paid Amount:</label>
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].paidAmount}" />
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
                     </div>
-                    <button type="button" class="btn btn-secondary btn-sm mb-2 add-diagnosis-code-btn" th:data-index="${iterStat.index}">Add Diagnosis Code</button>
-                    <div class="form-group">
-                        <label>Charge Amount:</label>
-                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].chargeAmount}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Outstanding Amount:</label>
-                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].outstandingAmount}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Paid Amount:</label>
-                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].paidAmount}" />
-                    </div>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
                 </div>
             </div>
         </div>
         <button type="button" class="btn btn-success btn-sm" onclick="addChargeSection()">Add</button>
-        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
 </body>
