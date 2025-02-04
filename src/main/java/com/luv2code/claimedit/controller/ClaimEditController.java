@@ -68,6 +68,6 @@ public class ClaimEditController {
 
         model.addAttribute("claim" , claim);
 
-        return "populateClaim ";
+        return "populateClaim";
     }
 }

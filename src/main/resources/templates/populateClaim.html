@@ -95,18 +95,22 @@
         <div class="card">
             <label></label>
             <input type="hidden" th:field="*{patientDetails.patientName}" />
-            <h2 th:text="*{patientDetails.patientName}"></h2>
             <input type="hidden" th:field="*{patientDetails.patientDOB}" />
-            <h2 th:text="${#temporals.format(claim.patientDetails.patientDOB, 'dd/MM/yyyy')}"></h2>
             <input type="hidden" th:field="*{patientDetails.id}" />
-            <h2 th:text="*{patientDetails.id}"></h2>
+            <h2>
+            Patient Name : <span th:text="*{patientDetails.patientName}"></span>
+            | Patient DOB : <span th:text="${#temporals.format(claim.patientDetails.patientDOB, 'dd/MM/yyyy')}"></span>
+            | Patient ID : <span th:text="*{patientDetails.id}"></span>
+            </h2>
 
         </div>
         <div class="card">
             <input type="hidden" th:field="${claim.created}" />
-            <h2 th:text="${claim.created}"></h2>
             <input type="hidden" th:field="${claim.id}" />
-            <h2 th:text="${claim.id}"></h2>
+            <h3>
+                Claim ID : <span th:text="${claim.id}"></span>
+                | Created Date : <span th:text="${#temporals.format(claim.created, 'dd/MM/yyyy')}"></span>
+            </h3>
             <div id="charge-sections">
                 <div th:class="'card mb-3'" th:each="charge, iterStat : *{charges}" th:id="'charge-section-' + ${iterStat.index}">
                     <div class="card-body">
