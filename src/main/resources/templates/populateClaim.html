@@ -98,9 +98,9 @@
             <input type="hidden" th:field="*{patientDetails.patientDOB}" />
             <input type="hidden" th:field="*{patientDetails.id}" />
             <h2>
-            Patient Name : <span th:text="*{patientDetails.patientName}"></span>
-            | Patient DOB : <span th:text="${#temporals.format(claim.patientDetails.patientDOB, 'dd/MM/yyyy')}"></span>
-            | Patient ID : <span th:text="*{patientDetails.id}"></span>
+                Patient Name : <span th:text="*{patientDetails.patientName}"></span>
+                | Patient DOB : <span th:text="${#temporals.format(claim.patientDetails.patientDOB, 'dd/MM/yyyy')}"></span>
+                | Patient ID : <span th:text="*{patientDetails.id}"></span>
             </h2>
 
         </div>

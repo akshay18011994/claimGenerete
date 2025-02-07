@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function updateCities() {
+            const stateCityMap = {
+                'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+                'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara'],
+                'Karnataka': ['Bangalore', 'Mysore', 'Mangalore']
+            };
+
+            const stateSelect = document.getElementById('state');
+            const citySelect = document.getElementById('city');
+            const selectedState = stateSelect.value;
+
+            // Clear the city dropdown
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (selectedState) {
+                stateCityMap[selectedState].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Patient Registration Form</h1>
+    <form th:action="@{/savePatient}" th:object="${patientDetails}" method="POST">
+        <!-- Personal Details -->
+        <div class="form-group">
+            <label for="patientName">Patient Name:</label>
+            <input type="text" class="form-control w-50" id="patientName" name="patientName" th:field="*{patientName}" required>
+        </div>
+        <div class="form-group">
+            <label for="patientDOB">Date of Birth:</label>
+            <input type="date" class="form-control w-50" id="patientDOB" name="patientDOB" th:field="*{patientDOB}" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select class="form-control w-50" id="gender" name="gender" th:field="*{gender}" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <textarea class="form-control w-50" id="address" name="address" rows="3" th:field="*{address}" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="state">State:</label>
+            <select class="form-control w-50" id="state" name="state" th:field="*{state}" onchange="updateCities()" required>
+                <option value="">Select State</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Karnataka">Karnataka</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <select class="form-control w-50" id="city" name="city" th:field="*{city}" required>
+                <option value="">Select City</option>
+                <!-- Cities will be dynamically populated based on state selection -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="zipcode">Zipcode:</label>
+            <input type="text" class="form-control w-50" id="zipcode" name="zipcode" th:field="*{zipcode}" required>
+        </div>
+        <div class="form-group">
+            <label for="contactExtention">Contact Number:</label>
+            <div class="input-group w-50">
+                <select class="form-control col-3" id="contactExtention" name="contactExtention" th:field="*{contactExtention}" required>
+                    <option value=00>+--</option>
+                    <option value=91>+91</option>
+                    <option value=92>+92</option>
+                    <option value=93>+93</option>
+                </select>
+                <input type="tel" class="form-control col-9" id="contactNumber" name="contactNumber" th:field="*{contactNumber}" maxlength="10" pattern="\d{10}" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" class="form-control w-50" id="email" name="email" th:field="*{email}" required>
+        </div>
+
+        <!-- Medical Details -->
+        <div class="form-group">
+            <label for="insuranceProviderName">Insurance Provider:</label>
+            <input type="text" class="form-control w-50" id="insuranceProviderName" name="insuranceProviderName" th:field="*{insuranceProviderName}">
+        </div>
+        <div class="form-group">
+            <label for="insuranceNumber">Insurance Number:</label>
+            <input type="text" placeholder="0000000000" class="form-control w-50" id="insuranceNumber" name="insuranceNumber" th:field="*{insuranceNumber}" maxlength="10" pattern="\d{10}">
+        </div>
+        <div class="form-group">
+            <label for="allergies">Allergies:</label>
+            <textarea class="form-control w-50" id="allergies" name="allergies" rows="2" th:field="*{allergies}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="medicalHistory">Medical History:</label>
+            <textarea class="form-control w-50" id="medicalHistory" name="medicalHistory" rows="3" th:field="*{medicalHistory}"></textarea>
+        </div>
+
+        <!-- Emergency Contact Details -->
+        <div class="form-group">
+            <label for="emergencyContactName">Emergency Contact Name:</label>
+            <input type="text" class="form-control w-50" id="emergencyContactName" name="emergencyContactName" th:field="*{emergencyContactName}" required>
+        </div>
+        <div class="form-group">
+            <label for="emergencyContactNumber">Emergency Contact Number:</label>
+            <input type="tel" placeholder="0000000000" class="form-control w-50" id="emergencyContactNumber" name="emergencyContactNumber" th:field="*{emergencyContactNumber}" maxlength="10" pattern="\d{10}" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+        <a class="btn btn-secondary" th:href="@{/searchPatientClaims}">Back</a>
+    </form>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
