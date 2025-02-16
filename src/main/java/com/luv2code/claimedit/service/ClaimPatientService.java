@@ -10,4 +10,10 @@ public interface ClaimPatientService {
     List<Claim> getPatientClaims(PatientDetails patientDetails);
 
     Claim fetchClaim(int id);
+
+    PatientDetails savePatientDetails(PatientDetails patientDetails);
+
+    PatientDetails getPatientDetail(int id);
+
+    Claim saveClaim(Claim claim);
 }

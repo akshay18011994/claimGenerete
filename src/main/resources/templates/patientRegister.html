@@ -30,6 +30,27 @@
                 });
             }
         }
+
+        function populateInitialValues(state, city) {
+            const stateSelect = document.getElementById('state');
+            const citySelect = document.getElementById('city');
+
+            if (state) {
+                stateSelect.value = state;
+                updateCities();
+
+                if (city) {
+                    citySelect.value = city;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate initial values from Thymeleaf variables
+            const initialState = /*[[${patientDetails.state}]]*/ 'Maharashtra'; // Thymeleaf variable
+            const initialCity = /*[[${patientDetails.city}]]*/ 'Pune'; // Thymeleaf variable
+            populateInitialValues(initialState, initialCity);
+        });
     </script>
 </head>
 <body>
@@ -37,6 +58,10 @@
     <h1 class="mb-4">Patient Registration Form</h1>
     <form th:action="@{/savePatient}" th:object="${patientDetails}" method="POST">
         <!-- Personal Details -->
+        <div class="form-group">
+            <label for="id">Patient ID:</label>
+            <input type="text" class="form-control w-50" id="id" name="id" th:field="*{id}" placeholder="ID" readonly>
+        </div>
         <div class="form-group">
             <label for="patientName">Patient Name:</label>
             <input type="text" class="form-control w-50" id="patientName" name="patientName" th:field="*{patientName}" required>
@@ -102,7 +127,8 @@
         </div>
         <div class="form-group">
             <label for="insuranceNumber">Insurance Number:</label>
-            <input type="text" placeholder="0000000000" class="form-control w-50" id="insuranceNumber" name="insuranceNumber" th:field="*{insuranceNumber}" maxlength="10" pattern="\d{10}">
+            <input type="text" placeholder="0000000000" class="form-control w-50" id="insuranceNumber" name="insuranceNumber" th:field="*{insuranceNumber}">
+            <div th:if="${#fields.hasErrors('insuranceNumber')}" th:errors="*{insuranceNumber}" class="text-danger"></div>
         </div>
         <div class="form-group">
             <label for="allergies">Allergies:</label>

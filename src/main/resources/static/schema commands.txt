@@ -1,0 +1,10 @@
+DROP USER if exists 'claimedit'@'localhost' ;
+
+CREATE USER 'claimedit'@'localhost' IDENTIFIED BY 'claimedit';
+
+GRANT ALL PRIVILEGES ON * . * TO 'claimedit'@'localhost';
+
+--------------------------------
+CREATE DATABASE  IF NOT EXISTS `claimedit`;
+USE `claimedit`;
+

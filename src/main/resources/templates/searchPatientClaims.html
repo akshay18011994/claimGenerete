@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">patientDetails Form</h1>
+    <h1 class="mb-4">PatientDetails Form</h1>
     <a class="btn btn-primary mb-3" th:href="@{/registerPatient}">New Patient</a>
     <form th:action="@{/searchPatientClaims}" th:object="${patientDetails}" method="POST">
         <div class="form-group">
@@ -17,6 +17,9 @@
         <div class="form-group">
             <label for="patientName">patient Name:</label>
             <input type="text" id="patientName" th:field="*{patientName}" class="form-control" />
+        </div>
+        <div th:if="${patientExist}">
+            <a class="btn btn-primary mb-3" th:href="@{/newClaim(patientId = ${patientDetails.id})}">New Claim</a>
         </div>
         <button type="submit" class="btn btn-primary">Search Claims</button>
         <div class="mt-5" th:if="${listClaims}">

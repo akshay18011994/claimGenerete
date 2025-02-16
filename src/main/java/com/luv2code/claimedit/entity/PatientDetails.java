@@ -1,28 +1,57 @@
 package com.luv2code.claimedit.entity;
 
+import com.luv2code.claimedit.validate.StartWithCode;
+import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
+@Entity
+@Table(name = "patient_details")
 public class PatientDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "patient_seq")
+    @SequenceGenerator(name = "patient_seq", sequenceName = "patient_seq", allocationSize = 1)
     private int id;
+    @Column(name = "patient_name")
     private String patientName;
+    @Column(name = "patient_dob")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate patientDOB;
+    @Column(name = "gender")
     private String gender;
+    @Column(name = "address")
     private String address;
+    @Column(name = "state")
     private String state;
+    @Column(name = "city")
     private String city;
+    @Column(name = "zipcode")
     private String zipcode;
+    @Column(name = "contact_extention")
     private int contactExtention;
+    @Column(name = "contact_number")
     private String contactNumber;
+    @Column(name = "email")
     private String email;
+    @Column(name = "insurance_provider_name")
     private String insuranceProviderName;
+    @Column(name = "insurance_number")
+    //@StartWithCode(value = "INS" , message = "Insurance Number must start with 'INS'")
     private String insuranceNumber;
+    @Column(name = "allergies")
     private String allergies;
+    @Column(name = "medical_history")
     private String medicalHistory;
+    @Column(name = "emergency_contact_name")
     private String emergencyContactName;
+    @Column(name = "emergency_contact_number")
     private String emergencyContactNumber;
+
+    @OneToMany(mappedBy = "patientDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Claim> claims;
+
 
     public PatientDetails()
     {
@@ -38,6 +67,25 @@ public class PatientDetails {
 
     public PatientDetails(int id, String patientName, LocalDate patientDOB, String gender, String address, String state, String city, String zipcode, int contactExtention, String contactNumber, String email, String insuranceProviderName, String insuranceNumber, String allergies, String medicalHistory, String emergencyContactName, String emergencyContactNumber) {
         this.id = id;
+        this.patientName = patientName;
+        this.patientDOB = patientDOB;
+        this.gender = gender;
+        this.address = address;
+        this.state = state;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.contactExtention = contactExtention;
+        this.contactNumber = contactNumber;
+        this.email = email;
+        this.insuranceProviderName = insuranceProviderName;
+        this.insuranceNumber = insuranceNumber;
+        this.allergies = allergies;
+        this.medicalHistory = medicalHistory;
+        this.emergencyContactName = emergencyContactName;
+        this.emergencyContactNumber = emergencyContactNumber;
+    }
+
+    public PatientDetails(String patientName, LocalDate patientDOB, String gender, String address, String state, String city, String zipcode, int contactExtention, String contactNumber, String email, String insuranceProviderName, String insuranceNumber, String allergies, String medicalHistory, String emergencyContactName, String emergencyContactNumber) {
         this.patientName = patientName;
         this.patientDOB = patientDOB;
         this.gender = gender;
@@ -190,6 +238,14 @@ public class PatientDetails {
 
     public void setEmergencyContactNumber(String emergencyContactNumber) {
         this.emergencyContactNumber = emergencyContactNumber;
+    }
+
+    public List<Claim> getClaims() {
+        return claims;
+    }
+
+    public void setClaims(List<Claim> claims) {
+        this.claims = claims;
     }
 
     @Override

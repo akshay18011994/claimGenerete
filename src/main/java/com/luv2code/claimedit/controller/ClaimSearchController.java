@@ -27,6 +27,7 @@ public class ClaimSearchController {
             claimList = claimPatientService.getPatientClaims(patientDetails);
         }
         model.addAttribute("patientDetails",patientDetails);
+        model.addAttribute("patientExist" , true);
         if(claimList.size()>0) {
             model.addAttribute("listClaims", claimList);
         }

@@ -2,6 +2,7 @@ package com.luv2code.claimedit.controller;
 
 import com.luv2code.claimedit.entity.Charge;
 import com.luv2code.claimedit.entity.Claim;
+import com.luv2code.claimedit.entity.Diagnosis;
 import com.luv2code.claimedit.entity.PatientDetails;
 import com.luv2code.claimedit.service.ClaimPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,9 @@ public class ClaimEditController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = localDate.format(formatter);
         PatientDetails pd = new PatientDetails(222 ,"AA", LocalDate.of(1994,12,1), "MALE");
-        List<String> listDiagnosis =Arrays.asList("s1","s2");
+        List<Diagnosis> listDiagnosis =Arrays.asList(new Diagnosis(1,"S1","fever",1),
+        new Diagnosis(2,"S2","cold",2 ));
+
         Charge c1 = new Charge(1,"92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231);
         Charge c2 = new Charge(2,"92345",listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231);
 
@@ -48,15 +51,15 @@ public class ClaimEditController {
         return "populateClaim";
     }
 
-    @PostMapping("/process")
+    @PostMapping("/processClaim")
     public String processClaim(@ModelAttribute Claim claim)
     {
         System.out.println(claim.getCharges().size());
+        claim.getCharges().stream().forEach(charge -> {charge.setClaim(claim);});
 
-        LocalDate patientDOB=claim.getPatientDetails().getPatientDOB();
-        System.out.println(patientDOB);
-
-        claim.getCharges().forEach(System.out::println);
+        PatientDetails patientDetails = claimPatientService.getPatientDetail(claim.getPatientDetails().getId());
+        claim.setPatientDetails(patientDetails);
+        claimPatientService.saveClaim(claim);
         return "populateClaim";
     }
 
@@ -66,8 +69,21 @@ public class ClaimEditController {
 
         Claim claim=claimPatientService.fetchClaim(claimId);
 
+        claim.getCharges().forEach(System.out::println);
+        System.out.println("------------------------");
+
         model.addAttribute("claim" , claim);
 
+        return "populateClaim";
+    }
+
+    @RequestMapping("/newClaim")
+    public String newClaimGeneration(@RequestParam("patientId") int patientId ,Model model)
+    {
+        PatientDetails patientDetails = claimPatientService.getPatientDetail(patientId);
+        Claim claim = new Claim();
+        claim.setPatientDetails(patientDetails);
+        model.addAttribute("claim" , claim);
         return "populateClaim";
     }
 }
