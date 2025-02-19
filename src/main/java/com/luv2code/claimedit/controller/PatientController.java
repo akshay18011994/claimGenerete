@@ -30,6 +30,8 @@ public class PatientController {
     {
         System.out.println(patientDetails);
         patientDetails=claimPatientService.savePatientDetails(patientDetails);
+        System.out.println("-----------------");
+        System.out.println(patientDetails);
         model.addAttribute("patientDetails" , patientDetails);
         if(bindingResult.hasErrors())
         {

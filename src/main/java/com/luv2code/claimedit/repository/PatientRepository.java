@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientRepository extends JpaRepository<PatientDetails,Integer> {
 
-    @Query("SELECT p FROM PatientDetails p LEFT JOIN FETCH p.claims WHERE p.id = :#{#patientDetails.id} OR p.patientName = :#{#patientDetails.patientName}")
-    public PatientDetails getPatientDetailsByIdOrName(PatientDetails patientDetails);
+    @Query("SELECT p FROM PatientDetails p LEFT JOIN FETCH p.claims WHERE p.id = :#{#patientDetails.id}")
+    public PatientDetails getPatientDetailsById(PatientDetails patientDetails);
 
 }

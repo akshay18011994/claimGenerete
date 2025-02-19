@@ -20,17 +20,31 @@ public class ClaimSearchController {
     ClaimPatientService claimPatientService;
 
     @RequestMapping("/searchPatientClaims")
+    public String searchPatientClaimsForm(@ModelAttribute PatientDetails patientDetails , Model model)
+    {
+        model.addAttribute("patientExist" , true);
+        model.addAttribute("patientDetails",patientDetails);
+
+        return "searchPatientClaims";
+    }
+    @RequestMapping("/searchPatient")
     public String searchPatientClaims(@ModelAttribute PatientDetails patientDetails , Model model)
     {
+        System.out.println("-------searchPatientClaims----------");
         List<Claim> claimList = new ArrayList<>();
-        if(null != patientDetails.getPatientName()) {
-            claimList = claimPatientService.getPatientClaims(patientDetails);
+        patientDetails  = claimPatientService.getPatientClaims(patientDetails);
+
+        if(null !=patientDetails.getEmail() || null !=patientDetails.getAddress())
+        {
+            model.addAttribute("patientExist" , true);
         }
+        else {
+            model.addAttribute("patientExist" , false);
+        }
+        System.out.println(patientDetails);
         model.addAttribute("patientDetails",patientDetails);
-        model.addAttribute("patientExist" , true);
-        if(claimList.size()>0) {
-            model.addAttribute("listClaims", claimList);
-        }
+        model.addAttribute("listClaims", patientDetails.getClaims());
+        System.out.println("-------searchPatientClaims end ----------");
         return "searchPatientClaims";
 
     }

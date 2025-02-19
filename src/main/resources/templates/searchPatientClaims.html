@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>patientDetails Claim Search</title>
+    <title>PatientDetails Claim Search</title>
     <!-- Bootstrap CSS for better styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -9,20 +9,31 @@
 <div class="container mt-5">
     <h1 class="mb-4">PatientDetails Form</h1>
     <a class="btn btn-primary mb-3" th:href="@{/registerPatient}">New Patient</a>
-    <form th:action="@{/searchPatientClaims}" th:object="${patientDetails}" method="POST">
+    <form th:action="@{/searchPatient}" th:object="${patientDetails}" method="POST">
         <div class="form-group">
-            <label for="id">patient ID:</label>
+            <label for="id">Patient ID:</label>
             <input type="number" id="id" th:field="*{id}" class="form-control" />
         </div>
-        <div class="form-group">
-            <label for="patientName">patient Name:</label>
-            <input type="text" id="patientName" th:field="*{patientName}" class="form-control" />
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="patientName">Patient Name:</label>
+                <input type="text" id="patientName" th:field="*{patientName}" class="form-control" readonly/>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="patientDOB">Date of Birth:</label>
+                <input type="date" id="patientDOB" th:field="*{patientDOB}" class="form-control" readonly/>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="gender">Gender:</label>
+                <input id="gender" th:field="*{gender}" class="form-control" readonly/>
+            </div>
         </div>
-        <div th:if="${patientExist}">
-            <a class="btn btn-primary mb-3" th:href="@{/newClaim(patientId = ${patientDetails.id})}">New Claim</a>
+        <div th:if="${patientExist != null and !patientExist}">
+            <p class="text-danger">Patient Not Exist!!</p>
         </div>
         <button type="submit" class="btn btn-primary">Search Claims</button>
         <div class="mt-5" th:if="${listClaims}">
+            <a class="btn btn-primary mb-3" th:href="@{/newClaim(patientId = ${patientDetails.id})}">New Claim</a>
             <h3>Claims:</h3>
             <table class="table table-bordered">
                 <thead>
@@ -44,16 +55,6 @@
             </table>
         </div>
     </form>
-
-    <!--<h2 class="mt-5">Search Claims</h2>
-    <form th:action="@{/searchClaims}" method="GET">
-        <div class="form-group">
-            <label for="searchpatientDetailsId">patientDetails ID:</label>
-            <input type="number" id="searchpatientDetailsId" name="patientDetailsId" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>-->
-
 </div>
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

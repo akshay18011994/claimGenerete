@@ -1,10 +1,9 @@
 package com.luv2code.claimedit.utility;
 
-import com.luv2code.claimedit.entity.Charge;
-import com.luv2code.claimedit.entity.Claim;
-import com.luv2code.claimedit.entity.Diagnosis;
-import com.luv2code.claimedit.entity.PatientDetails;
+import com.luv2code.claimedit.entity.*;
 import com.luv2code.claimedit.repository.ClaimRepository;
+import com.luv2code.claimedit.repository.DiagnosisMasterRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,10 @@ import java.util.List;
 public class CommandLine implements CommandLineRunner {
 
     @Autowired
-    ClaimRepository claimRepository;
+    EntityManager entityManager;
+
+    @Autowired
+    DiagnosisMasterRepository diagnosisMasterRepository;
     @Override
     @Transactional
     public void run(String... args) throws Exception {
@@ -51,7 +53,19 @@ public class CommandLine implements CommandLineRunner {
                 charge.setClaim(claim);
                 charge.getDiagnosisCodes().stream().forEach(diagnosis -> {diagnosis.setCharge(charge);});
             });
-        claimRepository.save(claim);
+        System.out.println("line 1 : "+claim.hashCode());
+        entityManager.merge(claim);
+
+
+        DiagnosisMaster dm1 = new DiagnosisMaster("s1","fever",new BigDecimal("123.5"));
+        DiagnosisMaster dm2 = new DiagnosisMaster("s2","Knee Pain",new BigDecimal("200.50"));
+        DiagnosisMaster dm3 = new DiagnosisMaster("s3","Heart Issue",new BigDecimal("1000"));
+
+
+
+        diagnosisMasterRepository.saveAll(Arrays.asList(dm1,dm2,dm3));
+
+
 
     }
 }

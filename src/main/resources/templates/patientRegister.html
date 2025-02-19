@@ -6,8 +6,9 @@
     <title>Patient Registration Form</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <script>
-        function updateCities() {
+        function updateCities(selectedCity = '') {
             const stateCityMap = {
                 'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
                 'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara'],
@@ -18,14 +19,16 @@
             const citySelect = document.getElementById('city');
             const selectedState = stateSelect.value;
 
-            // Clear the city dropdown
             citySelect.innerHTML = '<option value="">Select City</option>';
 
-            if (selectedState) {
+            if (selectedState && stateCityMap[selectedState]) {
                 stateCityMap[selectedState].forEach(city => {
                     const option = document.createElement('option');
                     option.value = city;
                     option.textContent = city;
+                    if (city === selectedCity) {
+                        option.selected = true;
+                    }
                     citySelect.appendChild(option);
                 });
             }
@@ -37,19 +40,19 @@
 
             if (state) {
                 stateSelect.value = state;
-                updateCities();
-
-                if (city) {
-                    citySelect.value = city;
-                }
+                updateCities(city); // Populate city dropdown based on state and set the initial city value
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Populate initial values from Thymeleaf variables
-            const initialState = /*[[${patientDetails.state}]]*/ 'Maharashtra'; // Thymeleaf variable
-            const initialCity = /*[[${patientDetails.city}]]*/ 'Pune'; // Thymeleaf variable
+            const initialState = /*[[${patientDetails.state}]]*/ ''; // Placeholder to be replaced by Thymeleaf
+            const initialCity = /*[[${patientDetails.city}]]*/ ''; // Placeholder to be replaced by Thymeleaf
+
             populateInitialValues(initialState, initialCity);
+
+            document.getElementById('state').addEventListener('change', () => {
+                updateCities(); // Update cities when state is changed by user
+            });
         });
     </script>
 </head>
@@ -85,7 +88,7 @@
         </div>
         <div class="form-group">
             <label for="state">State:</label>
-            <select class="form-control w-50" id="state" name="state" th:field="*{state}" onchange="updateCities()" required>
+            <select class="form-control w-50" id="state" name="state" th:field="*{state}"  required>
                 <option value="">Select State</option>
                 <option value="Maharashtra">Maharashtra</option>
                 <option value="Gujarat">Gujarat</option>
@@ -95,7 +98,7 @@
         <div class="form-group">
             <label for="city">City:</label>
             <select class="form-control w-50" id="city" name="city" th:field="*{city}" required>
-                <option value="">Select City</option>
+                <option th:value="*{city}" th:text="*{city}">Select City</option>
                 <!-- Cities will be dynamically populated based on state selection -->
             </select>
         </div>

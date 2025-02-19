@@ -13,7 +13,7 @@ public class Charge {
             allocationSize=1,
             name = "charge_sequence",
             sequenceName="charge_sequence")
-    private int id;
+    private Integer id;
     @Column(name = "procedure_code")
     private String procedureCode;
     @OneToMany(mappedBy = "charge", cascade = CascadeType.ALL)
@@ -35,7 +35,7 @@ public class Charge {
 
     }
 
-    public Charge(int id, String procedureCode, List<Diagnosis> diagnosisCodes, BigDecimal chargeAmount, BigDecimal outstandingAmount, BigDecimal paidAmount, int claimId) {
+    public Charge(Integer id, String procedureCode, List<Diagnosis> diagnosisCodes, BigDecimal chargeAmount, BigDecimal outstandingAmount, BigDecimal paidAmount, int claimId) {
         this.id = id;
         this.procedureCode = procedureCode;
         this.diagnosisCodes = diagnosisCodes;
@@ -53,11 +53,11 @@ public class Charge {
         this.paidAmount = paidAmount;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int chargeId) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -52,27 +52,32 @@ public class ClaimEditController {
     }
 
     @PostMapping("/processClaim")
-    public String processClaim(@ModelAttribute Claim claim)
+    public String processClaim(@ModelAttribute Claim claim, Model model)
     {
+        System.out.println("-------processClaim ------------");
+
         System.out.println(claim.getCharges().size());
-        claim.getCharges().stream().forEach(charge -> {charge.setClaim(claim);});
 
         PatientDetails patientDetails = claimPatientService.getPatientDetail(claim.getPatientDetails().getId());
+        claim.setPatientId(patientDetails.getId());
         claim.setPatientDetails(patientDetails);
-        claimPatientService.saveClaim(claim);
+        Claim savedClaim =claimPatientService.saveClaim(claim);
+        model.addAttribute("claim",savedClaim);
+        System.out.println("-------processClaim END ------------");
         return "populateClaim";
     }
 
     @RequestMapping("/claimEdit")
     public String populateSearchedClaim(@RequestParam("claimId") int claimId , Model model)
     {
-
+        System.out.println("-------populateSearchedClaim ------------");
         Claim claim=claimPatientService.fetchClaim(claimId);
 
         claim.getCharges().forEach(System.out::println);
         System.out.println("------------------------");
 
         model.addAttribute("claim" , claim);
+        System.out.println("-------populateSearchedClaim END ------------");
 
         return "populateClaim";
     }
@@ -80,10 +85,13 @@ public class ClaimEditController {
     @RequestMapping("/newClaim")
     public String newClaimGeneration(@RequestParam("patientId") int patientId ,Model model)
     {
+        System.out.println("-------newClaimGeneration ------------");
+
         PatientDetails patientDetails = claimPatientService.getPatientDetail(patientId);
         Claim claim = new Claim();
         claim.setPatientDetails(patientDetails);
         model.addAttribute("claim" , claim);
+        System.out.println("-------newClaimGeneration END------------");
         return "populateClaim";
     }
 }

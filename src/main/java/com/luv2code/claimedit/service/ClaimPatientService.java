@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ClaimPatientService {
 
-    List<Claim> getPatientClaims(PatientDetails patientDetails);
+    PatientDetails getPatientClaims(PatientDetails patientDetails);
 
     Claim fetchClaim(int id);
 

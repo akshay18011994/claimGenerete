@@ -2,20 +2,21 @@ package com.luv2code.claimedit.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "claim")
 
-public class Claim {
+public class Claim implements Cloneable, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "claim_sequence")
     @SequenceGenerator(initialValue=9000,
             allocationSize=1,
             name = "claim_sequence",
             sequenceName="claim_sequence")
-    private int id;
+    private Integer id;
     @Column(name = "primary_insurance")
     private String primaryInsurance;
     @Column(name = "secondary_insurance")
@@ -39,10 +40,11 @@ public class Claim {
     {
         this.charges = new ArrayList<>();
         addOneCharge();
+        System.out.println(this.hashCode());
     }
 
 
-    public Claim(int id, String primaryInsurance, String secondaryInsurance, List<Charge> charges, PatientDetails patientDetails , LocalDate created , int patientId, String status) {
+    public Claim(Integer id, String primaryInsurance, String secondaryInsurance, List<Charge> charges, PatientDetails patientDetails , LocalDate created , int patientId, String status) {
         this.id = id;
         this.primaryInsurance = primaryInsurance;
         this.secondaryInsurance = secondaryInsurance;
@@ -51,6 +53,8 @@ public class Claim {
         this.created = created;
         this.patientId = patientId;
         this.status=status;
+        System.out.println(this.hashCode());
+
     }
 
     public Claim(String primaryInsurance, String secondaryInsurance, List<Charge> charges, LocalDate created, String status, PatientDetails patientDetails) {
@@ -60,13 +64,15 @@ public class Claim {
         this.created = created;
         this.status = status;
         this.patientDetails = patientDetails;
+        System.out.println(this.hashCode());
+
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -132,5 +138,20 @@ public class Claim {
         {
             charges.add(new Charge());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Claim{" +
+                "id=" + id +
+                ", primaryInsurance='" + primaryInsurance + '\'' +
+                ", secondaryInsurance='" + secondaryInsurance + '\'' +
+                ", charges=" + charges +
+                ", patientDetails=" + patientDetails +
+                ", created=" + created +
+                ", patientId=" + patientId +
+                ", status='" + status + '\'' +
+                "hashcode"+ this.hashCode() +
+                '}';
     }
 }

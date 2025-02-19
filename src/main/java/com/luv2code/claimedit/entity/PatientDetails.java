@@ -13,7 +13,7 @@ public class PatientDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "patient_seq")
     @SequenceGenerator(name = "patient_seq", sequenceName = "patient_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
     @Column(name = "patient_name")
     private String patientName;
     @Column(name = "patient_dob")
@@ -58,14 +58,14 @@ public class PatientDetails {
 
     }
 
-    public PatientDetails(int id, String patientName, LocalDate patientDOB, String gender) {
+    public PatientDetails(Integer id, String patientName, LocalDate patientDOB, String gender) {
         this.id = id;
         this.patientName = patientName;
         this.patientDOB = patientDOB;
         this.gender = gender;
     }
 
-    public PatientDetails(int id, String patientName, LocalDate patientDOB, String gender, String address, String state, String city, String zipcode, int contactExtention, String contactNumber, String email, String insuranceProviderName, String insuranceNumber, String allergies, String medicalHistory, String emergencyContactName, String emergencyContactNumber) {
+    public PatientDetails(Integer id, String patientName, LocalDate patientDOB, String gender, String address, String state, String city, String zipcode, int contactExtention, String contactNumber, String email, String insuranceProviderName, String insuranceNumber, String allergies, String medicalHistory, String emergencyContactName, String emergencyContactNumber) {
         this.id = id;
         this.patientName = patientName;
         this.patientDOB = patientDOB;
@@ -120,11 +120,11 @@ public class PatientDetails {
         this.patientDOB = patientDOB;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -6,6 +6,9 @@ import com.luv2code.claimedit.entity.Diagnosis;
 import com.luv2code.claimedit.entity.PatientDetails;
 import com.luv2code.claimedit.repository.ClaimRepository;
 import com.luv2code.claimedit.repository.PatientRepository;
+import com.luv2code.claimedit.utility.ClaimUtilityHelper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,12 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
     private ClaimRepository claimRepository;
 
     private List<Claim> claims;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private ClaimUtilityHelper claimUtilityHelper;
 
     public ClaimPatientServiceImpl()
     {
@@ -58,12 +67,18 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
 
     @Override
     @Transactional
-    public List<Claim> getPatientClaims(PatientDetails patientDetails) {
+    public PatientDetails getPatientClaims(PatientDetails patientDetails) {
 
         System.out.println("Claims list "+claims.size());
-        PatientDetails patientDetails1=patientRepository.getPatientDetailsByIdOrName(patientDetails);
-        claims.addAll(patientDetails1.getClaims());
-        return claims;
+        PatientDetails patientDetails1=patientRepository.getPatientDetailsById(patientDetails);
+        //claims.addAll(patientDetails1.getClaims());
+        if(patientDetails1 != null)
+        {
+            return patientDetails1;
+        }
+        else{
+            return new PatientDetails();
+        }
     }
 
     @Override
@@ -96,21 +111,52 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
         }
     }
 
+    @Transactional
     public PatientDetails savePatientDetails(PatientDetails patientDetails)
     {
         return patientRepository.save(patientDetails);
     }
 
+    @Transactional
     @Override
     public PatientDetails getPatientDetail(int id) {
         return patientRepository.findById(id).get();
     }
 
+    @Transactional
     public Claim saveClaim(Claim claim)
     {
-        claim.getCharges().stream().forEach(charge->{charge.setClaim(claim);
-        charge.getDiagnosisCodes().stream().forEach(diagnosis -> {diagnosis.setCharge(charge);});});
-        return claimRepository.save(claim);
+        if(null != claim.getId())
+        {
+            Claim existingClaim  = entityManager.find(claim.getClass(),claim.getId());
+            if(existingClaim!=null)
+            {
+                entityManager.detach(existingClaim);
+            }
+        }
+        for (Charge charge : claim.getCharges()) {
+            charge.setClaim(claim);
+            for (Diagnosis diagnosis : charge.getDiagnosisCodes()) {
+                diagnosis.setCharge(charge);
+            }
+        }
+
+        if(null == claim.getId() || claim.getId() == 0)
+        {
+            claim.setCreated(LocalDate.now());
+        }
+
+        claim=claimUtilityHelper.validateUpdateStatus(claim);
+        claim =claimUtilityHelper.calculateClaimCharges(claim);
+        System.out.println(entityManager.contains(claim));
+         claim= entityManager.merge(claim);
+        System.out.println(entityManager.contains(claim));
+        System.out.println("line 3 : "+claim.hashCode());
+        System.out.println("line 2 : "+claim.hashCode());
+
+
+
+        return claim;
     }
 
 }
