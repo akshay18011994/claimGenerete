@@ -29,13 +29,15 @@ public class Charge {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "claim_id")
     private Claim claim;
+    @Column(name ="status")
+    private String status="A";
 
     public Charge()
     {
 
     }
 
-    public Charge(Integer id, String procedureCode, List<Diagnosis> diagnosisCodes, BigDecimal chargeAmount, BigDecimal outstandingAmount, BigDecimal paidAmount, int claimId) {
+    public Charge(Integer id, String procedureCode, List<Diagnosis> diagnosisCodes, BigDecimal chargeAmount, BigDecimal outstandingAmount, BigDecimal paidAmount, int claimId, String status) {
         this.id = id;
         this.procedureCode = procedureCode;
         this.diagnosisCodes = diagnosisCodes;
@@ -43,14 +45,16 @@ public class Charge {
         this.outstandingAmount = outstandingAmount;
         this.paidAmount = paidAmount;
         this.claimId = claimId;
+        this.status=status;
     }
 
-    public Charge(String procedureCode, List<Diagnosis> diagnosisCodes, BigDecimal chargeAmount, BigDecimal outstandingAmount, BigDecimal paidAmount) {
+    public Charge(String procedureCode, List<Diagnosis> diagnosisCodes, BigDecimal chargeAmount, BigDecimal outstandingAmount, BigDecimal paidAmount, String status) {
         this.procedureCode = procedureCode;
         this.diagnosisCodes = diagnosisCodes;
         this.chargeAmount = chargeAmount;
         this.outstandingAmount = outstandingAmount;
         this.paidAmount = paidAmount;
+        this.status= status;
     }
 
     public Integer getId() {
@@ -117,6 +121,14 @@ public class Charge {
         this.claim = claim;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Charge{" +
@@ -127,6 +139,7 @@ public class Charge {
                 ", outstandingAmount=" + outstandingAmount +
                 ", paidAmount=" + paidAmount +
                 ", claimId=" + claimId +
+                ", status=" + status +
                 '}';
     }
 }
