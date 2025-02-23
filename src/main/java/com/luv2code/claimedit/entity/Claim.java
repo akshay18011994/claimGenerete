@@ -1,5 +1,6 @@
 package com.luv2code.claimedit.entity;
 
+import com.luv2code.claimedit.validate.ActiveChargeSize;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -23,6 +24,7 @@ public class Claim implements Cloneable, Serializable {
     private String secondaryInsurance;
 
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
+    @ActiveChargeSize(value = "A",message="Atleast One active charge should be present")
     private List<Charge> charges;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -34,6 +36,20 @@ public class Claim implements Cloneable, Serializable {
     private int patientId;
     @Column(name = "status")
     private String status ="New";
+
+    @PrePersist
+    @PreUpdate
+    public void updateDiagnosisCodeStatus() {
+        if (charges != null) {
+            for (Charge charge : charges) {
+                if ("D".equals(charge.getStatus()) && charge.getDiagnosisCodes() != null) {
+                    for (Diagnosis diagnosisCode : charge.getDiagnosisCodes()) {
+                        diagnosisCode.setStatus("D");
+                    }
+                }
+            }
+        }
+    }
 
 
     public Claim()

@@ -33,14 +33,17 @@ public class CommandLine implements CommandLineRunner {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = localDate.format(formatter);
         PatientDetails pd = new PatientDetails("AA", LocalDate.of(1994,12,1), "MALE","shastri Nagar","Maharashtra","Pune","410210",91,"9870490686","a@b.com","ICICI LOMBARD","INS6543","Sun Light Issue","Back Injury","Rohit Sharma","9875834573");
-        List<Diagnosis> listDiagnosis = Arrays.asList(new Diagnosis("S1","fever"),
-                new Diagnosis("S2","cold"));
-        List<Diagnosis> listDiagnosis2 = Arrays.asList(new Diagnosis("S1","fever"),
-                new Diagnosis("S2","cold"));
-        Charge c1 = new Charge("92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0));
-        Charge c2 = new Charge("92345",listDiagnosis2,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0));
+        List<Diagnosis> listDiagnosis = Arrays.asList(new Diagnosis("S1","fever","A"),
+                new Diagnosis("S2","cold","A"));
+        List<Diagnosis> listDiagnosis2 = Arrays.asList(new Diagnosis("S1","fever","A"),
+                new Diagnosis("S2","cold","A"));
+        List<Diagnosis> listDiagnosis3 = Arrays.asList(new Diagnosis("S1","fever","A"),
+                new Diagnosis("S2","cold","A"));
+        Charge c1 = new Charge("92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),"A");
+        Charge c2 = new Charge("92345",listDiagnosis3,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),"A");
+        Charge c3 = new Charge("92345",listDiagnosis2,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),"D");
 
-        List<Charge> listCharges = Arrays.asList(c1,c2);
+        List<Charge> listCharges = Arrays.asList(c1,c2,c3);
         claim.setPatientDetails(pd);
         claim.setCharges(listCharges);
         claim.setCreated(LocalDate.now());

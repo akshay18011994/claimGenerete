@@ -28,7 +28,7 @@ public class ClaimValidationHelperImpl implements ClaimUtilityHelper {
         List<Claim> claimList =claimRepository.fetchClaimOlderThanGivenDate(claim,claim.getCreated().minusMonths(6));
         if(null !=claimList && !claimList.isEmpty())
         {
-            List<String> listDiagnosisCodeNewClaim = claim.getCharges().stream().flatMap(c->c.getDiagnosisCodes().stream().map(d->d.getDiagnosisCode())).collect(Collectors.toList());
+            List<String> listDiagnosisCodeNewClaim = claim.getCharges().stream().filter(ch->ch.getStatus().equals("A")).flatMap(c->c.getDiagnosisCodes().stream().map(d->d.getDiagnosisCode())).collect(Collectors.toList());
             List<String> listDiagnosisCodeExisting = claimList.stream().flatMap(clm -> clm.getCharges().stream().flatMap(c->c.getDiagnosisCodes().stream().map(d->d.getDiagnosisCode()))).collect(Collectors.toList());
             List<String> existDiagnosisCode =listDiagnosisCodeNewClaim.stream().filter(d->listDiagnosisCodeNewClaim.contains(d)).collect(Collectors.toList());
             if(null !=existDiagnosisCode && !existDiagnosisCode.isEmpty())
@@ -43,7 +43,7 @@ public class ClaimValidationHelperImpl implements ClaimUtilityHelper {
     @Transactional
     @Override
     public Claim calculateClaimCharges(Claim claim) {
-        claim.getCharges().forEach(charge -> {
+        claim.getCharges().stream().filter(chs->chs.getStatus().equals("A")).forEach(charge -> {
             BigDecimal totalChargeAmount = charge.getDiagnosisCodes().stream()
                     .map(d -> diagnosisMasterRepository.findByDiagnosisCode(d.getDiagnosisCode()).getAmount())
                     .collect(Collectors.reducing(BigDecimal.ZERO, BigDecimal::add));

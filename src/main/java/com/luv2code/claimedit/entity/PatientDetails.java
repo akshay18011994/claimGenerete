@@ -38,7 +38,7 @@ public class PatientDetails {
     @Column(name = "insurance_provider_name")
     private String insuranceProviderName;
     @Column(name = "insurance_number")
-    //@StartWithCode(value = "INS" , message = "Insurance Number must start with 'INS'")
+    @StartWithCode(value = "INS" , message = "Insurance Number must start with 'INS'")
     private String insuranceNumber;
     @Column(name = "allergies")
     private String allergies;

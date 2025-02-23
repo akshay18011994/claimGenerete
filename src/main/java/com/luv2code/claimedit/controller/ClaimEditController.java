@@ -5,9 +5,11 @@ import com.luv2code.claimedit.entity.Claim;
 import com.luv2code.claimedit.entity.Diagnosis;
 import com.luv2code.claimedit.entity.PatientDetails;
 import com.luv2code.claimedit.service.ClaimPatientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,11 +35,11 @@ public class ClaimEditController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = localDate.format(formatter);
         PatientDetails pd = new PatientDetails(222 ,"AA", LocalDate.of(1994,12,1), "MALE");
-        List<Diagnosis> listDiagnosis =Arrays.asList(new Diagnosis(1,"S1","fever",1),
-        new Diagnosis(2,"S2","cold",2 ));
+        List<Diagnosis> listDiagnosis =Arrays.asList(new Diagnosis(1,"S1","fever",1,"A"),
+        new Diagnosis(2,"S2","cold",2,"A"));
 
-        Charge c1 = new Charge(1,"92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231);
-        Charge c2 = new Charge(2,"92345",listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231);
+        Charge c1 = new Charge(1,"92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231,"A");
+        Charge c2 = new Charge(2,"92345",listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231,"A");
 
         List<Charge> listCharges = Arrays.asList(c1,c2);
         claim.setPatientDetails(pd);
@@ -52,8 +54,13 @@ public class ClaimEditController {
     }
 
     @PostMapping("/processClaim")
-    public String processClaim(@ModelAttribute Claim claim, Model model)
+    public String processClaim(@ModelAttribute("claim") @Valid Claim claim,BindingResult bindingResult, Model model, @RequestParam(required = false) String removedCharges)
     {
+        if(bindingResult.hasErrors())
+        {
+            model.addAttribute("claim",claim);
+            return  "populateClaim";
+        }
         System.out.println("-------processClaim ------------");
 
         System.out.println(claim.getCharges().size());
@@ -61,8 +68,9 @@ public class ClaimEditController {
         PatientDetails patientDetails = claimPatientService.getPatientDetail(claim.getPatientDetails().getId());
         claim.setPatientId(patientDetails.getId());
         claim.setPatientDetails(patientDetails);
-        Claim savedClaim =claimPatientService.saveClaim(claim);
-        model.addAttribute("claim",savedClaim);
+        claimPatientService.saveClaim(claim);
+         Claim fetchedClaim=claimPatientService.fetchClaim(claim.getId());
+        model.addAttribute("claim",fetchedClaim);
         System.out.println("-------processClaim END ------------");
         return "populateClaim";
     }

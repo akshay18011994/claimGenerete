@@ -9,6 +9,7 @@ import com.luv2code.claimedit.repository.PatientRepository;
 import com.luv2code.claimedit.utility.ClaimUtilityHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -47,11 +48,11 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
         List<Claim> claimList = new ArrayList<>();
         Claim claim = new Claim();
         PatientDetails patientDetails = new PatientDetails(222 ,"AA", LocalDate.of(1994,12,1), "MALE");
-        List<Diagnosis> listDiagnosis =Arrays.asList(new Diagnosis(1,"S1","fever",111),
-                new Diagnosis(2,"S2","cold",222));
+        List<Diagnosis> listDiagnosis =Arrays.asList(new Diagnosis(1,"S1","fever",111,"A"),
+                new Diagnosis(2,"S2","cold",222,"A"));
 
-        Charge c1 = new Charge(111,"92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231);
-        Charge c2 = new Charge(222,"92345",listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231);
+        Charge c1 = new Charge(111,"92345", listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231,"A");
+        Charge c2 = new Charge(222,"92345",listDiagnosis,new BigDecimal(20),new BigDecimal(20),new BigDecimal(0),91231,"A");
 
         List<Charge> listCharges = Arrays.asList(c1,c2);
         claim.setId(9999);
@@ -82,6 +83,7 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
     }
 
     @Override
+    @Transactional
     public Claim fetchClaim(int id) {
 
         if(id ==9999) {
@@ -92,10 +94,10 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String formattedDate = localDate.format(formatter);
             PatientDetails pd = new PatientDetails(222, "AA", LocalDate.of(1994, 12, 1), "MALE");
-            List<Diagnosis> listDiagnosis = Arrays.asList(new Diagnosis(1, "S1", "fever", 1),
-                    new Diagnosis(2, "S2", "cold", 2));
-            Charge c1 = new Charge(1, "92345", listDiagnosis, new BigDecimal(20), new BigDecimal(20), new BigDecimal(0), 91231);
-            Charge c2 = new Charge(2, "92345", listDiagnosis, new BigDecimal(20), new BigDecimal(20), new BigDecimal(0), 91231);
+            List<Diagnosis> listDiagnosis = Arrays.asList(new Diagnosis(1, "S1", "fever", 1,"A"),
+                    new Diagnosis(2, "S2", "cold", 2,"A"));
+            Charge c1 = new Charge(1, "92345", listDiagnosis, new BigDecimal(20), new BigDecimal(20), new BigDecimal(0), 91231,"A");
+            Charge c2 = new Charge(2, "92345", listDiagnosis, new BigDecimal(20), new BigDecimal(20), new BigDecimal(0), 91231,"A");
             claim.setId(9999);
             List<Charge> listCharges = Arrays.asList(c1, c2);
             claim.setPatientDetails(pd);
@@ -107,7 +109,8 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
             return claim;
         }
         else {
-            return claimRepository.findById(id).get();
+            entityManager.clear();
+            return claimRepository.findAllClaimsWithChargesByStatus(id);
         }
     }
 
@@ -136,8 +139,10 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
         }
         for (Charge charge : claim.getCharges()) {
             charge.setClaim(claim);
-            for (Diagnosis diagnosis : charge.getDiagnosisCodes()) {
-                diagnosis.setCharge(charge);
+            if(null!=charge.getDiagnosisCodes() && !charge.getDiagnosisCodes().isEmpty()) {
+                for (Diagnosis diagnosis : charge.getDiagnosisCodes()) {
+                    diagnosis.setCharge(charge);
+                }
             }
         }
 
@@ -150,13 +155,14 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
         claim =claimUtilityHelper.calculateClaimCharges(claim);
         System.out.println(entityManager.contains(claim));
          claim= entityManager.merge(claim);
+        entityManager.flush(); // Synchronize with the database
+        entityManager.clear(); // Clear the persistence context
         System.out.println(entityManager.contains(claim));
         System.out.println("line 3 : "+claim.hashCode());
         System.out.println("line 2 : "+claim.hashCode());
 
-
-
-        return claim;
+        Claim latestClaim = claimRepository.findAllClaimsWithChargesByStatus( claim.getId());
+        return latestClaim;
     }
 
 }

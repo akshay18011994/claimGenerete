@@ -47,6 +47,7 @@
                             <label>Paid Amount:</label>
                             <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].paidAmount" readonly/>
                         </div>
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].status" value="A" hidden="hidden"/>
                         <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
                     </div>
                 </div>
@@ -99,9 +100,19 @@
 
         document.addEventListener('DOMContentLoaded', initializeAddDiagnosisCodeButtons);
 
-        function removeSection(button) {
-            button.closest('.card').remove();
-        }
+    function removeSection(button) {
+    const card = button.closest('.card');
+    // Set status to 'D'
+    card.querySelector('input[name*=".status"]').value = 'D';
+    // Disable all inputs within the card
+    const inputs = card.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.disabled = false; // Ensure input is not disabled
+    });
+    // Hide the card visually
+    card.style.display = 'none';
+    }
+
     </script>
     <style>
         .card {
@@ -152,7 +163,8 @@
 <body>
 <div class="container mt-5">
     <h1 class="mb-4">Welcome to the Claim Edit Page</h1>
-    <form th:action="@{/processClaim}" th:object="${claim}" method="POST">
+    <form th:action="@{/processClaim}" th:object="${claim}"  method="POST">
+        <h3><span th:if="${#fields.hasErrors('charges')}" th:errors="${claim.charges}" class="text-danger">Error</span></h3>
         <div class="status-container">
             <div class="status-textbox">
                 <h2><input  type="text" class="form-control" th:field="${claim.status}"  readonly></h2>
@@ -178,6 +190,7 @@
             </h3>
             <div id="charge-sections">
                 <div th:class="'card mb-3'" th:each="charge, iterStat : *{charges}" th:id="'charge-section-' + ${iterStat.index}">
+                    <div th:if="${#fields.hasErrors('charges')}" th:errors="*{charges}" class="text-danger"></div>
                     <div class="card-body">
                         <div class="form-group">
                             <label>Charge ID:</label>
@@ -209,6 +222,7 @@
                             <label>Paid Amount:</label>
                             <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].paidAmount}" readonly/>
                         </div>
+                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].status}" hidden="hidden"/>
                         <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
                     </div>
                 </div>

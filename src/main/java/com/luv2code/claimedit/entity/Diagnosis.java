@@ -21,20 +21,24 @@ public class Diagnosis {
     @ManyToOne
     @JoinColumn(name = "charge_id")
     private Charge charge;
+    @Column(name ="status")
+    private String status="A";
 
     public Diagnosis() {
     }
 
-    public Diagnosis(int id, String diagnosisCode, String diagnosisCodeDesc, int chargeId ) {
+    public Diagnosis(int id, String diagnosisCode, String diagnosisCodeDesc, int chargeId , String status) {
         this.id = id;
         this.diagnosisCode = diagnosisCode;
         this.diagnosisCodeDesc = diagnosisCodeDesc;
         this.chargeId =chargeId;
+        this.status=status;
     }
 
-    public Diagnosis(String diagnosisCode, String diagnosisCodeDesc) {
+    public Diagnosis(String diagnosisCode, String diagnosisCodeDesc, String status) {
         this.diagnosisCode = diagnosisCode;
         this.diagnosisCodeDesc = diagnosisCodeDesc;
+        this.status=status;
     }
 
     public int getId() {
@@ -75,6 +79,14 @@ public class Diagnosis {
 
     public void setCharge(Charge charge) {
         this.charge = charge;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

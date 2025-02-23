@@ -30,7 +30,7 @@ public class Charge {
     @JoinColumn(name = "claim_id")
     private Claim claim;
     @Column(name ="status")
-    private String status="A";
+    private String status;
 
     public Charge()
     {

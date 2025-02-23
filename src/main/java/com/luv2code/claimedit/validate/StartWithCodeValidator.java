@@ -13,9 +13,11 @@ public class StartWithCodeValidator implements ConstraintValidator<StartWithCode
         this.prefix = constraintAnnotation.value();
     }
 
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if(prefix.startsWith(value))
+        System.out.println(value.startsWith(prefix));
+        if(value.startsWith(prefix))
         {
             return true;
         }
