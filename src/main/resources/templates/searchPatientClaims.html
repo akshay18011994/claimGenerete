@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,10 @@
     <div class="container mt-5">
         <div class="container mt-5">
             <h1 class="mb-4">PatientDetails Form</h1>
-            <a class="btn btn-primary mb-3" th:href="@{/registerPatient}">New Patient</a>
+            <!--<p sec:authentication="principal.authorities">Current Roles: <span th:text="${#authentication.authorities}"></span></p>-->
+            <div sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <a class="btn btn-primary mb-3" th:href="@{/registerPatient}">New Patient</a>
+            </div>
             <form th:action="@{/searchPatient}" th:object="${patientDetails}" method="POST">
                 <!-- CSRF token for security -->
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -39,7 +43,11 @@
                 <div th:if="${patientExist != null and !patientExist}">
                     <p class="text-danger">Patient Not Exist!!</p>
                 </div>
-                <button type="submit" class="btn btn-primary">Search Claims</button>
+                <div th:if="${patientExist != null and patientExist and patientDetails.patientName != null}">
+                    <a class="btn btn-primary mb-3" th:href="@{/getPatient(patientId = ${patientDetails.id})}">Edit Patient</a>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Search Patient with Claims</button>
                 <div class="mt-5" th:if="${listClaims}">
                     <a class="btn btn-primary mb-3" th:href="@{/newClaim(patientId = ${patientDetails.id})}">New Claim</a>
                     <h3>Claims:</h3>

@@ -17,6 +17,6 @@ public interface ClaimRepository extends JpaRepository<Claim,Integer> {
 
     //@Query("SELECT DISTINCT c FROM Claim c LEFT JOIN c.charges ch ON ch.claimId = c.id AND ch.status ='A' WHERE c.id = :id")
     //@Query("SELECT DISTINCT c FROM Claim c LEFT JOIN FETCH c.charges ch ON ch.claimId = c.id AND ch.status = 'A' WHERE c.id = :id")
-    @Query("SELECT DISTINCT c FROM Claim c LEFT JOIN FETCH c.charges ch WHERE c.id = :id AND (ch.status = 'A' OR ch.id IS NULL)")
-    Claim findAllClaimsWithChargesByStatus(int id);
+      @Query("SELECT DISTINCT c FROM Claim c LEFT JOIN FETCH c.charges ch WHERE c.id = :id AND (ch.status = 'A')")
+    Claim findAllClaimsWithChargesByStatus(@Param("id")int id);
 }

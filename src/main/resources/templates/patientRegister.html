@@ -60,6 +60,9 @@
 <div class="container mt-5">
     <h1 class="mb-4">Patient Registration Form</h1>
     <form th:action="@{/savePatient}" th:object="${patientDetails}" method="POST">
+        <div th:if="${patientDetails.id != null and patientDetails.id != 'ID' and patientDetailsSave != null}" class="alert alert-info" role="alert">
+            <h2>Patient registered successfully!</h2>
+        </div>
         <!-- Personal Details -->
         <div class="form-group">
             <label for="id">Patient ID:</label>
@@ -77,9 +80,9 @@
             <label for="gender">Gender:</label>
             <select class="form-control w-50" id="gender" name="gender" th:field="*{gender}" required>
                 <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
             </select>
         </div>
         <div class="form-group">
@@ -126,20 +129,20 @@
         <!-- Medical Details -->
         <div class="form-group">
             <label for="insuranceProviderName">Insurance Provider:</label>
-            <input type="text" class="form-control w-50" id="insuranceProviderName" name="insuranceProviderName" th:field="*{insuranceProviderName}">
+            <input type="text" class="form-control w-50" id="insuranceProviderName" name="insuranceProviderName" th:field="*{insuranceProviderName}" required>
         </div>
         <div class="form-group">
             <label for="insuranceNumber">Insurance Number:</label>
-            <input type="text" placeholder="0000000000" class="form-control w-50" id="insuranceNumber" name="insuranceNumber" th:field="*{insuranceNumber}">
+            <input type="text" placeholder="0000000000" class="form-control w-50" id="insuranceNumber" name="insuranceNumber" th:field="*{insuranceNumber}" required>
             <div th:if="${#fields.hasErrors('insuranceNumber')}" th:errors="*{insuranceNumber}" class="text-danger"></div>
         </div>
         <div class="form-group">
             <label for="allergies">Allergies:</label>
-            <textarea class="form-control w-50" id="allergies" name="allergies" rows="2" th:field="*{allergies}"></textarea>
+            <textarea class="form-control w-50" id="allergies" name="allergies" rows="2" th:field="*{allergies}" required></textarea>
         </div>
         <div class="form-group">
             <label for="medicalHistory">Medical History:</label>
-            <textarea class="form-control w-50" id="medicalHistory" name="medicalHistory" rows="3" th:field="*{medicalHistory}"></textarea>
+            <textarea class="form-control w-50" id="medicalHistory" name="medicalHistory" rows="3" th:field="*{medicalHistory}" required></textarea>
         </div>
 
         <!-- Emergency Contact Details -->

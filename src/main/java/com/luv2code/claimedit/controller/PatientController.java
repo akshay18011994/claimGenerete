@@ -29,16 +29,24 @@ public class PatientController {
     public String savePatient(Model model , @ModelAttribute("patientDetails") @Valid PatientDetails patientDetails, BindingResult bindingResult)
     {
         System.out.println(patientDetails);
+        if(bindingResult.hasErrors())
+        {
+            return  "patientRegister";
+        }
         patientDetails=claimPatientService.savePatientDetails(patientDetails);
         System.out.println("-----------------");
         System.out.println(patientDetails);
         model.addAttribute("patientDetails" , patientDetails);
-        if(bindingResult.hasErrors())
-        {
-           return  "patientRegister";
-        }
+        model.addAttribute("patientDetailsSave" , "patientDetailsSave");
         return "patientRegister";
     }
 
+   @RequestMapping("/getPatient")
+    public String getPatientDetails(@RequestParam("patientId") int patientId ,Model model)
+   {
+       PatientDetails patientDetails= claimPatientService.getPatientDetail(patientId);
+       model.addAttribute("patientDetails" , patientDetails);
+       return "patientRegister";
+   }
 
 }

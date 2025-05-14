@@ -68,7 +68,7 @@ public class ClaimEditController {
         PatientDetails patientDetails = claimPatientService.getPatientDetail(claim.getPatientDetails().getId());
         claim.setPatientId(patientDetails.getId());
         claim.setPatientDetails(patientDetails);
-        claimPatientService.saveClaim(claim);
+        claim=claimPatientService.saveClaim(claim);
          Claim fetchedClaim=claimPatientService.fetchClaim(claim.getId());
         model.addAttribute("claim",fetchedClaim);
         System.out.println("-------processClaim END ------------");

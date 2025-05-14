@@ -23,14 +23,14 @@
                         </div>
                         <div class="form-group">
                             <label>Procedure Code:</label>
-                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].procedureCode" />
+                            <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].procedureCode" required/>
                         </div>
                         <div id="diagnosis-section-${currentIndex}" class="mb-3">
                             <label>Diagnosis Codes:</label>
                             <div class="form-group">
-                                <input type="number" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0].id" hidden="hidden" value="0"/>
-                                <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0].diagnosisCode" onblur="fetchDiagnosisCodeDesc(this)" />
-                                <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0].diagnosisCodeDesc" readonly />
+                                <input type="number" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0].id" hidden="hidden" value="0" required/>
+                                <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0].diagnosisCode" onblur="fetchDiagnosisCodeDesc(this)" required/>
+                                <input type="text" class="form-control form-control-sm w-50" name="charges[${currentIndex}].diagnosisCodes[0].diagnosisCodeDesc" readonly required/>
                                 <input type="number" name="charges[${currentIndex}].diagnosisCodes[0].chargeId" hidden="hidden" value="0"/>
                             </div>
                         </div>
@@ -81,9 +81,9 @@
             var newDiagnosisCode = document.createElement('div');
             newDiagnosisCode.classList.add('form-group');
             newDiagnosisCode.innerHTML = `
-                <input type="number" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].id" hidden="hidden" value="0"/>
-                <input type="text" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].diagnosisCode" onblur="fetchDiagnosisCodeDesc(this)" />
-                <input type="text" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].diagnosisCodeDesc" readonly />
+                <input type="number" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].id" hidden="hidden" value="0" required/>
+                <input type="text" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].diagnosisCode" onblur="fetchDiagnosisCodeDesc(this)" required/>
+                <input type="text" class="form-control form-control-sm w-50" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].diagnosisCodeDesc" readonly required/>
                 <input type="number" name="charges[${chargeIndex}].diagnosisCodes[${diagnosisIndex}].chargeId" hidden="hidden" value="0"/>
             `;
             container.appendChild(newDiagnosisCode);
@@ -198,14 +198,14 @@
                         </div>
                         <div class="form-group">
                             <label>Procedure Code:</label>
-                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].procedureCode}" />
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].procedureCode}" required/>
                         </div>
                         <div th:id="'diagnosis-section-' + ${iterStat.index}" class="mb-3">
                             <label>Diagnosis Codes:</label>
                             <div th:each="diagnosisCode, diagStat : *{charges[__${iterStat.index}__].diagnosisCodes}" class="form-group">
-                                <input type="number" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].id}" hidden="hidden" value="0"/>
-                                <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].diagnosisCode}" onblur="fetchDiagnosisCodeDesc(this)"  />
-                                <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].diagnosisCodeDesc}" readonly />
+                                <input type="number" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].id}" hidden="hidden" value="0" required/>
+                                <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].diagnosisCode}" onblur="fetchDiagnosisCodeDesc(this)"  required/>
+                                <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].diagnosisCodeDesc}" readonly required/>
                                 <input type="number" th:field="*{charges[__${iterStat.index}__].diagnosisCodes[__${diagStat.index}__].chargeId}" hidden="hidden"/>
                             </div>
                         </div>
@@ -222,7 +222,7 @@
                             <label>Paid Amount:</label>
                             <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].paidAmount}" readonly/>
                         </div>
-                        <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].status}" hidden="hidden"/>
+                            <input type="text" class="form-control form-control-sm w-50" th:field="*{charges[__${iterStat.index}__].status}" value="A" hidden="hidden" />
                         <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(this)">Remove</button>
                     </div>
                 </div>
@@ -230,6 +230,7 @@
         </div>
         <button type="button" class="btn btn-success btn-sm" onclick="addChargeSection()">Add</button>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-secondary" th:href="@{/searchPatientClaims}">Back</a>
     </form>
 </div>
 </body>

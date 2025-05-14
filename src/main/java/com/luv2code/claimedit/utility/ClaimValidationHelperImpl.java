@@ -49,6 +49,8 @@ public class ClaimValidationHelperImpl implements ClaimUtilityHelper {
                     .collect(Collectors.reducing(BigDecimal.ZERO, BigDecimal::add));
 
             charge.setChargeAmount(totalChargeAmount);
+            charge.setOutstandingAmount(totalChargeAmount);
+            charge.setPaidAmount(BigDecimal.ZERO);
         });
         return claim;
     }

@@ -32,7 +32,7 @@ public class CommandLine implements CommandLineRunner {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = localDate.format(formatter);
-        PatientDetails pd = new PatientDetails("AA", LocalDate.of(1994,12,1), "MALE","shastri Nagar","Maharashtra","Pune","410210",91,"9870490686","a@b.com","ICICI LOMBARD","INS6543","Sun Light Issue","Back Injury","Rohit Sharma","9875834573");
+        PatientDetails pd = new PatientDetails("AA", LocalDate.of(1994,12,1), "Male","shastri Nagar","Maharashtra","Pune","410210",91,"9870490686","a@b.com","ICICI LOMBARD","INS6543","Sun Light Issue","Back Injury","Rohit Sharma","9875834573");
         List<Diagnosis> listDiagnosis = Arrays.asList(new Diagnosis("S1","fever","A"),
                 new Diagnosis("S2","cold","A"));
         List<Diagnosis> listDiagnosis2 = Arrays.asList(new Diagnosis("S1","fever","A"),
