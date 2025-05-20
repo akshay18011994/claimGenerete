@@ -61,12 +61,16 @@
                     <p class="text-danger">Patient Not Exist!!</p>
                 </div>
                 <div th:if="${patientExist != null and patientExist and patientDetails.patientName != null}">
+                    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
                     <a class="btn btn-primary mb-3" th:href="@{/getPatient(patientId = ${patientDetails.id})}">Edit Patient</a>
+                    </div>
                 </div>
                 <br>
                 <button type="submit" class="btn btn-primary">Search Patient with Claims</button>
                 <div class="mt-5" th:if="${listClaims}">
+                    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
                     <a class="btn btn-primary mb-3" th:href="@{/newClaim(patientId = ${patientDetails.id})}">New Claim</a>
+                    </div>
                     <h3>Claims:</h3>
                     <table class="table table-bordered">
                         <thead>

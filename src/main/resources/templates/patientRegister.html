@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,7 +88,7 @@
         </div>
         <div class="form-group">
             <label for="patientName">Patient Name:</label>
-            <input type="text" class="form-control w-50" id="patientName" name="patientName" th:field="*{patientName}" required>
+            <input type="text" class="form-control w-50" id="patientName" name="patientName" th:field="*{patientName}"  required>
         </div>
         <div class="form-group">
             <label for="patientDOB">Date of Birth:</label>
