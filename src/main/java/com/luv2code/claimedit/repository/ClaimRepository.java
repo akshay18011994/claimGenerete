@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ClaimRepository extends JpaRepository<Claim,Integer> {
 
-    @Query("SELECT c FROM Claim c where c.id <> :#{#claim.id} AND c.patientId = :#{#claim.patientDetails.id} AND c.created > :localDate")
+     @Query(value = "SELECT * FROM Claim c WHERE c.id <> COALESCE(:#{#claim.id}, (SELECT MAX(cl.id) + 1 FROM Claim cl)) AND c.patient_id = :#{#claim.patientDetails.id} AND c.created > :localDate", nativeQuery = true)
     public List<Claim> fetchClaimOlderThanGivenDate(Claim claim,@Param("localDate") LocalDate localDate);
 
     //@Query("SELECT DISTINCT c FROM Claim c LEFT JOIN c.charges ch ON ch.claimId = c.id AND ch.status ='A' WHERE c.id = :id")

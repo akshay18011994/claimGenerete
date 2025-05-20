@@ -157,12 +157,27 @@
             color: white; !important; /* Ensure text color remains white */
             opacity: 1; /* Prevents the textbox from looking grayed out */
         }
+        @keyframes fadeInSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated-heading {
+            animation: fadeInSlide 1s ease-in-out;
+        }
 
     </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Welcome to the Claim Edit Page</h1>
+    <h1 class="animated-heading text-center text-black p-3 rounded shadow-lg"
+        style="background: linear-gradient(to right, #6a11cb, #2575fc);">Welcome to the Claim Edit Page</h1>
     <form th:action="@{/processClaim}" th:object="${claim}"  method="POST">
         <h3><span th:if="${#fields.hasErrors('charges')}" th:errors="${claim.charges}" class="text-danger">Error</span></h3>
         <div class="status-container">
@@ -175,7 +190,8 @@
             <input type="hidden" th:field="*{patientDetails.patientName}" />
             <input type="hidden" th:field="*{patientDetails.patientDOB}" />
             <input type="hidden" th:field="*{patientDetails.id}" />
-            <h2>
+            <h2 class="animated-heading text-center text-white p-3 rounded shadow-lg"
+                style="background: linear-gradient(to right, #6a11cb, #2575fc);">
                 Patient Name : <span th:text="*{patientDetails.patientName}"></span>
                 | Patient DOB : <span th:text="${#temporals.format(claim.patientDetails.patientDOB, 'dd/MM/yyyy')}"></span>
                 | Patient ID : <span th:text="*{patientDetails.id}"></span>

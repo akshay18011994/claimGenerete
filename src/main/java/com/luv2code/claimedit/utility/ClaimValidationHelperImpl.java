@@ -30,7 +30,7 @@ public class ClaimValidationHelperImpl implements ClaimUtilityHelper {
         {
             List<String> listDiagnosisCodeNewClaim = claim.getCharges().stream().filter(ch->ch.getStatus().equals("A")).flatMap(c->c.getDiagnosisCodes().stream().map(d->d.getDiagnosisCode())).collect(Collectors.toList());
             List<String> listDiagnosisCodeExisting = claimList.stream().flatMap(clm -> clm.getCharges().stream().flatMap(c->c.getDiagnosisCodes().stream().map(d->d.getDiagnosisCode()))).collect(Collectors.toList());
-            List<String> existDiagnosisCode =listDiagnosisCodeNewClaim.stream().filter(d->listDiagnosisCodeNewClaim.contains(d)).collect(Collectors.toList());
+            List<String> existDiagnosisCode =listDiagnosisCodeExisting.stream().filter(d->listDiagnosisCodeNewClaim.contains(d)).collect(Collectors.toList());
             if(null !=existDiagnosisCode && !existDiagnosisCode.isEmpty())
             {
                 status="HOLD";

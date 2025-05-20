@@ -7,6 +7,22 @@
     <title>PatientDetails Claim Search</title>
     <!-- Bootstrap CSS for better styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @keyframes fadeInSlide {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .animated-heading {
+                    animation: fadeInSlide 1s ease-in-out;
+                }
+    </style>
 </head>
 <body>
 <div style="text-align: right;" class="container mt-5">
@@ -14,7 +30,8 @@
 </div>
     <div class="container mt-5">
         <div class="container mt-5">
-            <h1 class="mb-4">PatientDetails Form</h1>
+            <h1 class="animated-heading text-center text-black p-3 rounded shadow-lg"
+                style="background: linear-gradient(to right, #6a11cb, #2575fc);">PatientDetails Form</h1>
             <!--<p sec:authentication="principal.authorities">Current Roles: <span th:text="${#authentication.authorities}"></span></p>-->
             <div sec:authorize="hasAuthority('ROLE_ADMIN')">
                 <a class="btn btn-primary mb-3" th:href="@{/registerPatient}">New Patient</a>

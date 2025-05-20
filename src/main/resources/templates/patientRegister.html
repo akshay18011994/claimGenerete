@@ -55,10 +55,27 @@
             });
         });
     </script>
+    <style>
+        @keyframes fadeInSlide {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .animated-heading {
+                    animation: fadeInSlide 1s ease-in-out;
+                }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Patient Registration Form</h1>
+    <h1 class="animated-heading text-center text-black p-3 rounded shadow-lg"
+        style="background: linear-gradient(to right, #6a11cb, #2575fc);">Patient Registration Form</h1>
     <form th:action="@{/savePatient}" th:object="${patientDetails}" method="POST">
         <div th:if="${patientDetails.id != null and patientDetails.id != 'ID' and patientDetailsSave != null}" class="alert alert-info" role="alert">
             <h2>Patient registered successfully!</h2>
