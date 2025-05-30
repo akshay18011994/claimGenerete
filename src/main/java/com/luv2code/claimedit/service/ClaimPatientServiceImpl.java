@@ -9,9 +9,9 @@ import com.luv2code.claimedit.repository.PatientRepository;
 import com.luv2code.claimedit.utility.ClaimUtilityHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +38,8 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
 
     @Autowired
     private ClaimUtilityHelper claimUtilityHelper;
+
+    private static final Logger logger = LogManager.getLogger(ClaimPatientServiceImpl.class);
 
     public ClaimPatientServiceImpl()
     {
@@ -70,17 +72,25 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
     @Transactional
     public PatientDetails getPatientClaims(PatientDetails patientDetails) {
 
-        System.out.println("Claims list "+claims.size());
-        PatientDetails patientDetails1=patientRepository.getPatientDetailsById(patientDetails);
-        //claims.addAll(patientDetails1.getClaims());
-        if(patientDetails1 != null)
+        PatientDetails patientDetails1=null;
+
+        try {
+            System.out.println("Claims list " + claims.size());
+            patientDetails1 = patientRepository.getPatientDetailsById(patientDetails);
+            //claims.addAll(patientDetails1.getClaims());
+            if (patientDetails1 != null) {
+                return patientDetails1;
+            } else {
+                return new PatientDetails();
+            }
+        }
+        catch (Exception e)
         {
-            return patientDetails1;
+            logger.error("Error in getting patient claim" + e);
         }
-        else{
-            return new PatientDetails();
-        }
+        return patientDetails1;
     }
+
 
     @Override
     @Transactional
@@ -129,40 +139,43 @@ public class ClaimPatientServiceImpl implements ClaimPatientService{
     @Transactional
     public Claim saveClaim(Claim claim)
     {
-        if(null != claim.getId())
-        {
-            Claim existingClaim  = entityManager.find(claim.getClass(),claim.getId());
-            if(existingClaim!=null)
-            {
-                entityManager.detach(existingClaim);
-            }
-        }
-        for (Charge charge : claim.getCharges()) {
-            charge.setClaim(claim);
-            if(null!=charge.getDiagnosisCodes() && !charge.getDiagnosisCodes().isEmpty()) {
-                for (Diagnosis diagnosis : charge.getDiagnosisCodes()) {
-                    diagnosis.setCharge(charge);
+        Claim latestClaim=null;
+        try {
+            if (null != claim.getId()) {
+                Claim existingClaim = entityManager.find(claim.getClass(), claim.getId());
+                if (existingClaim != null) {
+                    entityManager.detach(existingClaim);
                 }
             }
+            for (Charge charge : claim.getCharges()) {
+                charge.setClaim(claim);
+                if (null != charge.getDiagnosisCodes() && !charge.getDiagnosisCodes().isEmpty()) {
+                    for (Diagnosis diagnosis : charge.getDiagnosisCodes()) {
+                        diagnosis.setCharge(charge);
+                    }
+                }
+            }
+
+            if (null == claim.getId() || claim.getId() == 0) {
+                claim.setCreated(LocalDate.now());
+            }
+
+            claim = claimUtilityHelper.validateUpdateStatus(claim);
+            claim = claimUtilityHelper.calculateClaimCharges(claim);
+            System.out.println(entityManager.contains(claim));
+            claim = entityManager.merge(claim);
+            entityManager.flush(); // Synchronize with the database
+            entityManager.clear(); // Clear the persistence context
+            System.out.println(entityManager.contains(claim));
+            System.out.println("line 3 : " + claim.hashCode());
+            System.out.println("line 2 : " + claim.hashCode());
+
+            latestClaim = claimRepository.findAllClaimsWithChargesByStatus(claim.getId());
+        } catch (Exception e) {
+            logger.error("Error in saving patient claim" + e);
         }
 
-        if(null == claim.getId() || claim.getId() == 0)
-        {
-            claim.setCreated(LocalDate.now());
-        }
-
-        claim=claimUtilityHelper.validateUpdateStatus(claim);
-        claim =claimUtilityHelper.calculateClaimCharges(claim);
-        System.out.println(entityManager.contains(claim));
-         claim= entityManager.merge(claim);
-        entityManager.flush(); // Synchronize with the database
-        entityManager.clear(); // Clear the persistence context
-        System.out.println(entityManager.contains(claim));
-        System.out.println("line 3 : "+claim.hashCode());
-        System.out.println("line 2 : "+claim.hashCode());
-
-        Claim latestClaim = claimRepository.findAllClaimsWithChargesByStatus( claim.getId());
-        return latestClaim;
+            return latestClaim;
     }
 
 }

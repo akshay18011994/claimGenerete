@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss.SSS} %highlight(%-5level) [%blue(%t)] %yellow(%logger{45}) : %msg%n%throwable"/>
+        </Console>
+
+        <!-- File Appender with Dynamic Naming -->
+        <RollingFile name="FileAppender"
+                     fileName="logs/claimEdit.log"
+                     filePattern="logs/claimEdit-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.luv2code.claimedit" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>   <!-- Logs to console -->
+            <AppenderRef ref="FileAppender"/>      <!-- Logs to file -->
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>   <!-- Logs to console -->
+            <AppenderRef ref="FileAppender"/>      <!-- Logs to file -->
+        </Root>
+    </Loggers>
+</Configuration>
